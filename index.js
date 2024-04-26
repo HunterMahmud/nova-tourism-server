@@ -28,6 +28,7 @@ const client = new MongoClient(uri, {
       await client.connect();
       const spotCollection = client.db("spotDB").collection("spots");
       const userCollection = client.db("usersDB").collection("users");
+
       //user related apis
       app.post('/users', async(req, res)=>{
         const info = req.body;
@@ -35,10 +36,40 @@ const client = new MongoClient(uri, {
         res.send(result)
       })
 
-      // spot realted apis
+      // spotDB realted apis
       app.post('/addSpot',async(req, res)=> {
         const spotInfo = req.body;
         const result = await spotCollection.insertOne(spotInfo);
+        res.send(result);
+      })
+      app.get('/allSpot', async(req, res)=>{
+        const cursor = spotCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+      app.get('/allSpot/:id', async(req, res)=>{
+        const id = req.params.id;
+        // console.log(id);
+        const query = {_id: new ObjectId(id)};
+        const result = await spotCollection.findOne(query);
+
+        res.send(result);
+      })
+      app.get('/mylist/:email', async(req, res)=>{
+        const email = req.params.email;
+        // console.log(email);
+        const query = {email:email};
+        const cursor =  spotCollection.find(query);
+        const result = await cursor.toArray();
+
+        res.send(result);
+        
+      })
+      app.delete('/deleteSpot/:id', async(req, res)=> {
+        const id = req.params.id;
+        // console.log(id);
+        const query = {_id: new ObjectId(id)};
+        const result = await spotCollection.deleteOne(query);
         res.send(result);
       })
       
