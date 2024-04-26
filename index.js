@@ -65,6 +65,19 @@ const client = new MongoClient(uri, {
         res.send(result);
         
       })
+      app.patch('/update/:id', async(req, res)=>{
+        const id = req.params.id;
+        const info = req.body;
+        const query = {_id:new ObjectId(id)};
+        const updateInfo = {
+          $set:{
+            ...info
+          }
+        }
+        const result = await spotCollection.updateOne(query, updateInfo);
+        res.send(result);
+      })
+     
       app.delete('/deleteSpot/:id', async(req, res)=> {
         const id = req.params.id;
         // console.log(id);
