@@ -26,8 +26,21 @@ const client = new MongoClient(uri, {
     try {
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
+      const spotCollection = client.db("spotDB").collection("spots");
+      const userCollection = client.db("usersDB").collection("users");
+      //user related apis
+      app.post('/users', async(req, res)=>{
+        const info = req.body;
+        const result = await userCollection.insertOne(info)
+        res.send(result)
+      })
 
-
+      // spot realted apis
+      app.post('/addSpot',async(req, res)=> {
+        const spotInfo = req.body;
+        const result = await spotCollection.insertOne(spotInfo);
+        res.send(result);
+      })
       
       // Send a ping to confirm a successful connection
       await client.db("admin").command({ ping: 1 });
