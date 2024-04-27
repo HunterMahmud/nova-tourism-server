@@ -26,14 +26,14 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const spotCollection = client.db("spotDB").collection("spots");
-    const userCollection = client.db("usersDB").collection("users");
+    const countriesCollection = client.db("countriesDB").collection("countries");
 
-    //user related apis
-    app.post("/users", async (req, res) => {
-      const info = req.body;
-      const result = await userCollection.insertOne(info);
+    //countries related apis
+    app.get("/countries", async (req, res) => {
+      const result = await countriesCollection.find().toArray();
       res.send(result);
     });
+    
 
     // spotDB realted apis
     app.post("/addSpot", async (req, res) => {
@@ -55,6 +55,7 @@ async function run() {
 
       res.send(result);
     });
+    // sorting on average cost ascending and descending order
     app.get("/allSpot/sortOrder/:orderId", async (req, res) => {
       const id = req.params.orderId;
       const cursor = spotCollection.find();
@@ -69,6 +70,8 @@ async function run() {
         res.send(result);
       }
     });
+
+    //get data filter by email
     app.get("/mylist/:email", async (req, res) => {
       const email = req.params.email;
       // console.log(email);
