@@ -35,6 +35,14 @@ async function run() {
       const result = await countriesCollection.find().toArray();
       res.send(result);
     });
+    app.get('/country/:countryId', async(req, res)=>{
+      const countryId = req.params.countryId;
+      console.log(countryId);
+      const query = {_id: countryId};
+      const result = await countriesCollection.findOne(query);
+      res.send(result);
+     
+    })
 
     //this api for set the multiple data to a countries db
     app.post("/countries/data", async (req, res) => {
