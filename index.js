@@ -36,6 +36,9 @@ const client = new MongoClient(uri, {
         res.send(result)
       })
 
+
+
+
       // spotDB realted apis
       app.post('/addSpot',async(req, res)=> {
         const spotInfo = req.body;
@@ -47,6 +50,7 @@ const client = new MongoClient(uri, {
         const result = await cursor.toArray();
         res.send(result);
       })
+      
       app.get('/allSpot/:id', async(req, res)=>{
         const id = req.params.id;
         // console.log(id);
@@ -80,6 +84,21 @@ const client = new MongoClient(uri, {
         const cursor = spotCollection.aggregate(pipeline);
         const result = await cursor.toArray();
         res.send(result);
+      });
+
+      app.get('/allSpotCountry', async(req, res)=>{
+        const pipeline = [
+          {
+            $group: {
+              _id: "$countryName",
+              data: { $push: "$$ROOT" }
+            }
+          }
+        ];
+        const cursor = spotCollection.aggregate(pipeline);
+        const result = await cursor.toArray();
+        res.send(result);
+        
       })
       app.patch('/update/:id', async(req, res)=>{
         const id = req.params.id;
