@@ -65,6 +65,22 @@ const client = new MongoClient(uri, {
         res.send(result);
         
       })
+      app.get('/countrySpot', async(req, res)=> {
+        const pipeline = [
+          {
+            $group: {
+              _id: "$countryName",
+              spot: { $first: "$$ROOT" }
+            }
+          },
+          {
+            $replaceRoot: { newRoot: "$spot" }
+          }
+        ];
+        const cursor = spotCollection.aggregate(pipeline);
+        const result = await cursor.toArray();
+        res.send(result);
+      })
       app.patch('/update/:id', async(req, res)=>{
         const id = req.params.id;
         const info = req.body;
