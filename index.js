@@ -26,14 +26,30 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const spotCollection = client.db("spotDB").collection("spots");
-    const countriesCollection = client.db("countriesDB").collection("countries");
+    const countriesCollection = client
+      .db("countriesDB")
+      .collection("countries");
 
     //countries related apis
     app.get("/countries", async (req, res) => {
       const result = await countriesCollection.find().toArray();
       res.send(result);
     });
-    
+
+    //this api for set the multiple data to a countries db
+    app.post("/countries/data", async (req, res) => {
+      const data = req.body;
+      // console.log(data);
+      const options = { ordered: true };
+      // Execute insert operation
+      const result = await countriesCollection.insertMany(data, options);
+
+      res.send(result);
+    });
+    app.get('/countries/data', async(req, res)=>{
+      const result = await countriesCollection.find().toArray();
+      res.send(result);
+    })
 
     // spotDB realted apis
     app.post("/addSpot", async (req, res) => {
