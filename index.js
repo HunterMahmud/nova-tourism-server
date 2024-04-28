@@ -37,7 +37,7 @@ async function run() {
     });
     app.get('/country/:countryId', async(req, res)=>{
       const countryId = req.params.countryId;
-      console.log(countryId);
+      // console.log(countryId);
       const query = {_id: countryId};
       const result = await countriesCollection.findOne(query);
       res.send(result);
